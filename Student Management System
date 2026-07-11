@@ -1,0 +1,98 @@
+import os
+from openpyxl import Workbook, load_workbook
+
+
+FOLDER_PATH = r"E:\Python"
+FILE_NAME = r"E:\Python\students.xlsx"
+
+def addstud():
+    nm = input("Enter Name: ")
+    cnt = input("Enter Contact Number: ")
+    em = input("Enter Email: ")
+    dep = input("Enter Department Name: ")
+    
+    wb = load_workbook(FILE_NAME)
+    ws = wb.active
+    
+    ws.append([nm, cnt, em, dep])
+    wb.save(FILE_NAME)
+    
+    print("\n Student Added to Excel Successfully!")
+    menu()
+
+
+def viewstud():
+    print("\n--- List of the Students ---")
+    wb = load_workbook(FILE_NAME)
+    ws = wb.active
+    
+    if ws.max_row <= 1:
+        print("No students found. Please add a student first.")
+    else:
+        for i, row in enumerate(ws.iter_rows(min_row=2, values_only=True), 1):
+            print(f"Student {i}:")
+            print(f"  Name: {row[0]}")
+            print(f"  Contact: {row[1]}")
+            print(f"  Email: {row[2]}")
+            print(f"  Department: {row[3]}")
+            print("--------------------")
+            
+    print("**********")
+    menu()
+
+
+def searchstud():
+    print("\n--- Search Student ---")
+    wb = load_workbook(FILE_NAME)
+    ws = wb.active
+    
+    if ws.max_row <= 1:
+        print("No students available to search.")
+        menu()
+        return
+
+    search_name = input("Enter the Name of the student to search: ")
+    found = False
+    
+    # Loop through the rows to find a match
+    for row in ws.iter_rows(min_row=2, values_only=True):
+        if str(row[0]).lower() == search_name.lower():
+            print("\n Student Found:")
+            print(f"  Name: {row[0]}")
+            print(f"  Contact: {row[1]}")
+            print(f"  Email: {row[2]}")
+            print(f"  Department: {row[3]}")
+            found = True
+            break 
+            
+    if not found:
+        print(f"\n No student found with the name '{search_name}'.")
+        
+    print("**********")
+    menu()
+
+
+def menu():
+    print("\n=== Welcome To Student Management System ===")
+    print("1. Add Student")
+    print("2. View Students")
+    print("3. Search Students")
+    print("4. Exit")
+    
+    op = input("Enter Option: ")
+    
+    if op == "1":
+        addstud()
+    elif op == "2":
+        viewstud()
+    elif op == "3":
+        searchstud()
+    elif op == "4":
+        print(f"\nExiting the Student Management System. Goodbye!")
+    else:
+        print("\n⚠️ Invalid option. Please enter 1, 2, 3, or 4.")
+        menu()
+
+
+
+menu()
